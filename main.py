@@ -1,3 +1,4 @@
+from typing import Union, List, Dict
 import argparse
 import math
 import time
@@ -8,36 +9,36 @@ import numpy as np
 from src.head_pose_estimation import FaceDetector, HeadPoseEstimator, get_square_box, draw_annotation_box
 from src.stabilizer import Stabilizer
 
-fps = ""
-detectfps = ""
-framecount = 0
-detectframecount = 0
-time1 = 0
-time2 = 0
-LABELS = ['face']
 
-if __name__ == '__main__':
+def run_process(model_face_detect,
+                model_head_pose,
+                image_width: int = 1280,
+                image_height: int = 720,
+                vidfps: int = 30,
+                num_threads: int = 4,
+                usbcamno: int = 0,
+                vid_file: Union[str, None] = None,
+                show: bool = True):
+    """
+    :param model_face_detect: path ot face detection model
+    :param model_head_pose: path head pose estimation model
+    :param image_width: video or camera width resolution
+    :param image_height: video or camera height resolution
+    :param vidfps: Frame rate
+    :param num_threads: max number of threads to be used
+    :param usbcamno: usb cam id (otional)
+    :param vid_file: path to video file
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_face_detect",
-                        default="models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
-                        help="Path of the detection model.")
-    parser.add_argument("--model_head_pose", default="models/head_pose_estimator_integer_quant.tflite",
-                        help="Path of the detection model.")
-    parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
-    parser.add_argument("--camera_width", type=int, default=640, help="width.")
-    parser.add_argument("--camera_height", type=int, default=480, help="height.")
-    parser.add_argument("--vidfps", type=int, default=30, help="Frame rate.")
-    parser.add_argument("--num_threads", type=int, default=4, help="Threads.")
-    args = parser.parse_args()
+    one of the params "usbcamo" or "vid_file" shoul be specified
+    """
 
-    model_face_detect = args.model_face_detect
-    model_head_pose = args.model_head_pose
-    usbcamno = args.usbcamno
-    image_width = args.camera_width
-    image_height = args.camera_height
-    vidfps = args.vidfps
-    num_threads = args.num_threads
+    fps = ""
+    detectfps = ""
+    framecount = 0
+    detectframecount = 0
+    time1 = 0
+    time2 = 0
+    LABELS = ['face']
 
     # 3D model points.
     model_points = np.array([
@@ -88,20 +89,36 @@ if __name__ == '__main__':
     head_pose_estimator_input_details = head_pose_estimator.input_details
     head_pose_estimator_predictions = head_pose_estimator.predictions
 
-    # Init Camera
-    cam = cv2.VideoCapture(usbcamno)
-    cam.set(cv2.CAP_PROP_FPS, vidfps)
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_width)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_height)
-    window_name = "USB Camera"
-    cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+    if vid_file:
+        cam = cv2.VideoCapture(vid_file)
+        cam.set(cv2.CAP_PROP_FPS, vidfps)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_width)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_height)
+        window_name = "videofile"
+        # cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+
+        # Определить кодек и создать объект VideoWriter
+        fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Или другой кодек, подходящий для вашего файла
+        output_video_path = '/home/dtsarev/master_of_cv/sem2/ml_in_cv_project/project/path_to_your_output_video.mp4'
+        out = cv2.VideoWriter(output_video_path, fourcc, 30.0, (int(cam.get(3)), int(cam.get(4))), isColor=True)
+    else:
+        # Init Camera
+        cam = cv2.VideoCapture(usbcamno)
+        cam.set(cv2.CAP_PROP_FPS, vidfps)
+        cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_width)
+        cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_height)
+        window_name = "USB Camera"
+        cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
 
     while True:
         start_time = time.perf_counter()
 
         ret, image = cam.read()
         if not ret:
-            continue
+            if vid_file:
+                break
+            else:
+                continue
 
         # Resize and normalize image for network input
         frame = cv2.resize(image, (300, 300))
@@ -190,13 +207,27 @@ if __name__ == '__main__':
                 # Draw boxes
                 draw_annotation_box(image, steady_pose[0], steady_pose[1], camera_matrix, dist_coeefs,
                                     color=(128, 255, 128))
-                cv2.putText(image, detectfps, (image_width - 170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1,
+                cv2.putText(image,
+                            detectfps,
+                            (image_width - 170, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            (38, 0, 255),
+                            1,
                             cv2.LINE_AA)
 
             if i >= (count - 1):
                 break
+        if show:
+            cv2.imshow('USB Camera', image)
+        if vid_file:
+            out.write(image)
 
-        cv2.imshow('USB Camera', image)
+        if vid_file and not cam.isOpened():
+            cam.release()
+            out.release()
+            cv2.destroyAllWindows()
+            break
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -216,3 +247,41 @@ if __name__ == '__main__':
         elapsedTime = end_time - start_time
         time1 += 1 / elapsedTime
         time2 += elapsedTime
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_face_detect",
+                        default="models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
+                        help="Path of the detection model.")
+    parser.add_argument("--model_head_pose", default="models/head_pose_estimator_integer_quant.tflite",
+                        help="Path of the detection model.")
+    parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
+
+    parser.add_argument("--vid", type=int, default=None, help="video file path")
+
+    parser.add_argument("--camera_width", type=int, default=1280, help="width.")
+    parser.add_argument("--camera_height", type=int, default=720, help="height.")
+    parser.add_argument("--vidfps", type=int, default=30, help="Frame rate.")
+    parser.add_argument("--num_threads", type=int, default=4, help="Threads.")
+    args = parser.parse_args()
+
+    model_face_detect = args.model_face_detect
+    model_head_pose = args.model_head_pose
+    usbcamno = args.usbcamno
+    image_width = args.camera_width
+    image_height = args.camera_height
+    vidfps = args.vidfps
+    num_threads = args.num_threads
+    vid_file = args.vid
+    vid_file = "/home/dtsarev/Загрузки/ex_vid2.mp4"
+
+    run_process(model_face_detect,
+                model_head_pose,
+                image_width,
+                image_height,
+                vidfps,
+                num_threads,
+                usbcamno,
+                vid_file,
+                show=False)
