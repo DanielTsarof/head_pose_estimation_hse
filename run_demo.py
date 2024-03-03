@@ -1,12 +1,12 @@
-import streamlit as st
 import cv2
-import numpy as np
+import streamlit as st
 from PIL import Image
 
-# Функция для обработки изображения (например, преобразование в градации серого)
-def process_image(image):
-    # Здесь можно применить любую обработку, например, преобразование в градации серого
-    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+from src.head_pose import Processor
+
+processor = Processor("models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
+                      "models/head_pose_estimator_integer_quant.tflite")
+
 
 def main():
     st.title("Webcam Live Feed")
@@ -25,10 +25,10 @@ def main():
             break
 
         # Обработка изображения
-        processed_frame = process_image(frame)
+        processed_frame = processor.process_frame(frame)
 
         # Конвертируем изображение обратно в формат, который можно отобразить в Streamlit
-        processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_GRAY2BGR)
+        processed_frame = cv2.cvtColor(processed_frame, cv2.COLOR_BGR2RGB)
         img = Image.fromarray(processed_frame)
 
         # Отображаем обработанное изображение
@@ -39,6 +39,7 @@ def main():
             break
 
     cap.release()
+
 
 if __name__ == "__main__":
     main()
