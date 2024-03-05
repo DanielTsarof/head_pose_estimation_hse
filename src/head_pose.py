@@ -59,7 +59,6 @@ class Processor:
 
         image_height = image.shape[0]
         image_width = image.shape[1]
-        print(image_width, image_height)
 
         # Camera internals
         focal_length = image_width
