@@ -9,7 +9,7 @@ processor = Processor("models/ssdlite_mobilenet_v2_face_300_integer_quant_with_p
 
 
 def main():
-    st.title("Webcam Live Feed")
+    st.title("Head Pose Estimation Demo")
     st.write("This is a simple webcam live feed demo using OpenCV and Streamlit.")
 
     # Создаем плейсхолдер для отображения изображения
