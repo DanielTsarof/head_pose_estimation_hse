@@ -1,7 +1,9 @@
-from typing import Union
+from __future__ import annotations
+
 import argparse
-import time
 import os
+import time
+from typing import Union
 
 import cv2
 
@@ -31,8 +33,8 @@ def run_process(model_face_detect,
     """
     detectframecount = 0
     framecount = 0
-    time1 = 0
-    time2 = 0
+    time1: float = 0
+    time2: float = 0
 
     processor = Processor(model_face_detect,
                           model_head_pose,
@@ -89,8 +91,6 @@ def run_process(model_face_detect,
         # FPS calculation
         framecount += 1
         if framecount >= 10:
-            fps = "(Playback) {:.1f} FPS".format(time1 / 10)
-            detectfps = "(Detection) {:.1f} FPS".format(detectframecount / time2)
             framecount = 0
             detectframecount = 0
             time1 = 0

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import cv2
 import numpy as np
 
@@ -16,7 +18,8 @@ class FaceDetector:
         except:
             print("WARNING: The installed PythonAPI of Tensorflow/Tensorflow Lite runtime does not support Multi-Thread processing.")
             print("WARNING: It works in single thread mode.")
-            print("WARNING: If you want to use Multi-Thread to improve performance on aarch64/armv7l platforms, please refer to one of the below to implement a customized Tensorflow/Tensorflow Lite runtime.")
+            print(("WARNING: If you want to use Multi-Thread to improve performance on aarch64/armv7l platforms,"
+                   " please refer to one of the below to implement a customized Tensorflow/Tensorflow Lite runtime."))
             print("https://github.com/PINTO0309/Tensorflow-bin.git")
             print("https://github.com/PINTO0309/TensorflowLite-bin.git")
             pass

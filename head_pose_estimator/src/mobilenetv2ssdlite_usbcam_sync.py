@@ -1,9 +1,12 @@
-import numpy as np
+from __future__ import annotations
+
+import argparse
 import math
 import time
-import sys
+
 import cv2
-import argparse
+import numpy as np
+
 try:
     from tflite_runtime.interpreter import Interpreter
 except:
@@ -13,15 +16,17 @@ fps = ""
 detectfps = ""
 framecount = 0
 detectframecount = 0
-time1 = 0
-time2 = 0
+time1: float = 0
+time2: float = 0
 
 LABELS = ['face']
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite", help="Path of the detection model.")
+    parser.add_argument("--model",
+                        default="ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
+                        help="Path of the detection model.")
     parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
     parser.add_argument("--camera_width", type=int, default=640, help="width.")
     parser.add_argument("--camera_height", type=int, default=480, help="height.")
@@ -29,20 +34,23 @@ if __name__ == '__main__':
     parser.add_argument("--num_threads", type=int, default=4, help="Threads.")
     args = parser.parse_args()
 
-    model        = args.model
-    usbcamno     = args.usbcamno
-    image_width  = args.camera_width
+    model = args.model
+    usbcamno = args.usbcamno
+    image_width = args.camera_width
     image_height = args.camera_height
-    vidfps       = args.vidfps
-    num_threads  = args.num_threads
+    vidfps = args.vidfps
+    num_threads = args.num_threads
 
     interpreter = Interpreter(model_path=model)
     try:
         interpreter.set_num_threads(num_threads)
     except:
-        print("WARNING: The installed PythonAPI of Tensorflow/Tensorflow Lite runtime does not support Multi-Thread processing.")
+        print(
+            "WARNING: The installed PythonAPI of Tensorflow/Tensorflow Lite runtime does not support Multi-Thread processing.")
         print("WARNING: It works in single thread mode.")
-        print("WARNING: If you want to use Multi-Thread to improve performance on aarch64/armv7l platforms, please refer to one of the below to implement a customized Tensorflow/Tensorflow Lite runtime.")
+        print(
+            ("WARNING: If you want to use Multi-Thread to improve performance on aarch64/armv7l platforms, please refer"
+             " to one of the below to implement a customized Tensorflow/Tensorflow Lite runtime."))
         print("https://github.com/PINTO0309/Tensorflow-bin.git")
         print("https://github.com/PINTO0309/TensorflowLite-bin.git")
         pass
@@ -86,12 +94,12 @@ if __name__ == '__main__':
             probability = score
             if probability >= 0.6:
                 if (not math.isnan(box[0]) and
-                   not math.isnan(box[1]) and
-                   not math.isnan(box[2]) and
-                   not math.isnan(box[3])):
-                   pass
+                        not math.isnan(box[1]) and
+                        not math.isnan(box[2]) and
+                        not math.isnan(box[3])):
+                    pass
                 else:
-                   continue
+                    continue
                 ymin = int(box[0] * image_height)
                 xmin = int(box[1] * image_width)
                 ymax = int(box[2] * image_height)
@@ -102,15 +110,18 @@ if __name__ == '__main__':
                     continue
                 classnum = int(classidx)
                 cv2.rectangle(image, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
-                cv2.putText(image, '{}: {:.2f}'.format(LABELS[classnum], score), (xmin, ymin - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 0), 2)
-                cv2.putText(image, fps, (image_width - 170, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1, cv2.LINE_AA)
-                cv2.putText(image, detectfps, (image_width - 170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1, cv2.LINE_AA)
+                cv2.putText(image, '{}: {:.2f}'.format(LABELS[classnum], score), (xmin, ymin - 5),
+                            cv2.FONT_HERSHEY_COMPLEX, 0.8, (0, 255, 0), 2)
+                cv2.putText(image, fps, (image_width - 170, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1,
+                            cv2.LINE_AA)
+                cv2.putText(image, detectfps, (image_width - 170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1,
+                            cv2.LINE_AA)
             if i >= (count - 1):
                 break
 
         cv2.imshow('USB Camera', image)
 
-        if cv2.waitKey(1)&0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
         detectframecount += 1

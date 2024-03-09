@@ -1,5 +1,5 @@
 [flake8]
-extend-ignore = E203
+extend-ignore = E203, E722
 exclude =
     .git,
     __pycache__,
@@ -9,6 +9,7 @@ exclude =
     dist,
     tests,
     venv,
-    head_pose_estimator.egg-info
+    head_pose_estimator.egg-info,
+    mobilenetv2ssdlite_usbcam_sync.py
 max-complexity = 10
 max-line-length = 160

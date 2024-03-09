@@ -1,26 +1,32 @@
+from __future__ import annotations
+
 import math
 
 import cv2
 import numpy as np
 
-from head_pose_estimator.src.head_pose_estimation import FaceDetector, HeadPoseEstimator, get_square_box, draw_annotation_box
+from head_pose_estimator.src.head_pose_estimation import draw_annotation_box
+from head_pose_estimator.src.head_pose_estimation import FaceDetector
+from head_pose_estimator.src.head_pose_estimation import get_square_box
+from head_pose_estimator.src.head_pose_estimation import HeadPoseEstimator
 from head_pose_estimator.src.stabilizer import Stabilizer
 
 detectfps = ""
 
+
 class Processor:
     def __init__(self,
-                model_face_detect,
-                model_head_pose,
-                num_threads: int = 4
+                 model_face_detect,
+                 model_head_pose,
+                 num_threads=4
                  ):
 
         self.model_face_detect = model_face_detect,
         self.model_head_pose = model_head_pose,
-        self.num_threads: int = num_threads,
+        self.num_threads = num_threads,
 
         # 3D model points.
-        model_points = np.array([
+        self.model_points = np.array([
             (0.0, 0.0, 0.0),  # Nose tip
             (0.0, -330.0, -65.0),  # Chin
             (-225.0, 170.0, -135.0),  # Left eye left corner
@@ -39,7 +45,8 @@ class Processor:
         self.model_points_68[:, 2] *= -1
 
         # Introduce scalar stabilizers for pose.
-        self.pose_stabilizers = [Stabilizer(state_num=2, measure_num=1, cov_process=0.1, cov_measure=0.1) for _ in range(6)]
+        self.pose_stabilizers = [Stabilizer(state_num=2, measure_num=1, cov_process=0.1, cov_measure=0.1) for _ in
+                                 range(6)]
 
         # Init Face Detector
         self.face_detector = FaceDetector(model_face_detect, num_threads)
@@ -109,8 +116,8 @@ class Processor:
 
                 offset_y = int(abs(ymax - ymin) * 0.1)
                 facebox = get_square_box([xmin, ymin + offset_y, xmax, ymax + offset_y])
-                if not (facebox[0] >= 0 and facebox[1] >= 0 and facebox[2] <= image_width and facebox[
-                    3] <= image_height):
+                if not (facebox[0] >= 0 and facebox[1] >= 0 and facebox[2] <= image_width and
+                        facebox[3] <= image_height):
                     continue
 
                 face_img = image[facebox[1]:facebox[3], facebox[0]:facebox[2]]
@@ -172,9 +179,9 @@ class Processor:
                 break
         return image
 
-
     def estimate_pose(self, image):
         pass
+
 
 if __name__ == '__main__':
     processor = Processor("../models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
