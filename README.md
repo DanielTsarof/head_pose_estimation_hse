@@ -24,11 +24,11 @@ Build project
 
     python3 –m build
 
-Run streamlit demo:
+### Run streamlit demo:
 
     python run_demo.py
 
-Run local demo:
+### Run local demo:
     
     python head_pose_estimator/main.py
 
@@ -51,7 +51,7 @@ or
 
     docker run -p 8501:8501 --device /dev/video0 streamlit_demo
 
-## Using
+## Using for frames processing
 
     from head_pose_estimator.src.head_pose import Processor
     from head_pose_estimator.src.head_poose_estimation import HeadPoseEstimator
