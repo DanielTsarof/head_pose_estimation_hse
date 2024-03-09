@@ -26,7 +26,7 @@ Build project
 
 ### Run streamlit demo:
 
-    python run_demo.py
+    streamlit run run_demo.py
 
 ### Run local demo:
 
