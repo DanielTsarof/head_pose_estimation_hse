@@ -18,6 +18,8 @@ Demo application to perform head pose estimation in real time
 
     source venv/bin/activate
 
+    pip install -r requirements.txt
+
 Build project
 
     python3 –m build
@@ -28,7 +30,7 @@ Run streamlit demo:
 
 Run local demo:
     
-    python main.py
+    python head_pose_estimator/main.py
 
 or
 
