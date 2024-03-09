@@ -51,6 +51,10 @@ or
 
     docker run -p 8501:8501 --device /dev/video0 streamlit_demo
 
+### Run tests
+
+    pytest -q tests/test_regression.py
+
 ## Using for frames processing
 
     from head_pose_estimator.src.head_pose import Processor
