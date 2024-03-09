@@ -18,5 +18,5 @@ setup(
     },
     install_requires=[
     ],
-    data_files=[('bin', ['head_pose_estimator/run_demo.py', 'head_pose_estimator/main.py'])]
+    data_files=[('bin', ['run_demo.py', 'head_pose_estimator/main.py'])]
 )

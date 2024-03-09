@@ -3,4 +3,4 @@ include *.txt
 recursive-include head_pose_estimator/models *.sh *.tflite
 recursive-include head_pose_estimator/src *.py
 exclude head_pose_estimator/tests/*
-include head_pose_estimator/main.py head_pose_estimator/run_demo.py
+include head_pose_estimator/main.py run_demo.py
