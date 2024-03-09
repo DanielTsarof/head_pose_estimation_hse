@@ -24,6 +24,10 @@ Demo application to perform head pose estimation in real time
     
     cd ..
 
+Build project
+
+    python3 –m build
+
 Run streamlit demo:
 
     python run_demo.py
@@ -32,11 +36,14 @@ Run local demo:
     
     python main.py
 
+or
+
+    head_pose
+
 ### PIP
 
     pip install git+https://github.com/DanielTsarof/head_pose_estimation_hse#egg=head_pose_estimator
 
-    import head_pose_estimator
 
 To run main.py or using Processor and FaceDetector classes you have to specify model paths
 

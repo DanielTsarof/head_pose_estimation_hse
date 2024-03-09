@@ -125,7 +125,6 @@ if __name__ == "__main__":
     vidfps = args.vidfps
     num_threads = args.num_threads
     vid_file = args.vid
-    vid_file = "/home/dtsarev/Загрузки/ex_vid2.mp4"
 
     run_process(model_face_detect,
                 model_head_pose,
