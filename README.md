@@ -3,7 +3,7 @@
 -----------------------------
 
 ## Description
-    
+
 Demo application to perform head pose estimation in real time
 
 ## Installation
@@ -29,7 +29,7 @@ Build project
     python run_demo.py
 
 ### Run local demo:
-    
+
     python head_pose_estimator/main.py
 
 or
@@ -42,7 +42,7 @@ or
 
 
 ### Docker demo
-    
+
     git clone git@github.com:DanielTsarof/head_pose_estimation_hse.git
 
     cd head_pose_estimation_hse
@@ -59,6 +59,10 @@ or
 
     from head_pose_estimator.src.head_pose import Processor
     from head_pose_estimator.src.head_poose_estimation import HeadPoseEstimator
- 
+
     # image if np.tensor (BGR format)
     processed_image = processor.process_frame(image)
+
+### pre-commit setup
+
+    pre-commit install
