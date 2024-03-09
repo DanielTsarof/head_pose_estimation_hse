@@ -18,12 +18,6 @@ Demo application to perform head pose estimation in real time
 
     source venv/bin/activate
 
-    cd models
-    
-    ./download.sh
-    
-    cd ..
-
 Build project
 
     python3 –m build
@@ -45,8 +39,6 @@ or
     pip install git+https://github.com/DanielTsarof/head_pose_estimation_hse#egg=head_pose_estimator
 
 
-To run main.py or using Processor and FaceDetector classes you have to specify model paths
-
 ### Docker demo
     
     git clone git@github.com:DanielTsarof/head_pose_estimation_hse.git
@@ -59,10 +51,8 @@ To run main.py or using Processor and FaceDetector classes you have to specify m
 
 ## Using
 
-    from src.head_pose import Processor
-    from src.head_poose_estimation import HeadPoseEstimator
-
-    processor = Processor(model_face_detect_path.tflite, model_head_pose_path.tflite, num_threads=4)
-    
+    from head_pose_estimator.src.head_pose import Processor
+    from head_pose_estimator.src.head_poose_estimation import HeadPoseEstimator
+ 
     # image if np.tensor (BGR format)
     processed_image = processor.process_frame(image)

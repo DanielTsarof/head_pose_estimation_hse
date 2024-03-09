@@ -1,10 +1,11 @@
 from typing import Union
 import argparse
 import time
+import os
 
 import cv2
 
-from src.head_pose import Processor
+from head_pose_estimator.src.head_pose import Processor
 
 
 def run_process(model_face_detect,
@@ -43,11 +44,11 @@ def run_process(model_face_detect,
         cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_width)
         cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_height)
         window_name = "videofile"
-        # cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
 
         # Определить кодек и создать объект VideoWriter
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Или другой кодек, подходящий для вашего файла
-        output_video_path = '/home/dtsarev/master_of_cv/sem2/ml_in_cv_project/project/path_to_your_output_video.mp4'
+
+        output_video_path = os.path.join(os.sep.join(vid_file.split(os.sep)[:-1]), 'processed_' + vid_file.split(os.sep)[-1])
         out = cv2.VideoWriter(output_video_path, fourcc, 30.0, (int(cam.get(3)), int(cam.get(4))), isColor=True)
     else:
         # Init Camera
@@ -100,12 +101,12 @@ def run_process(model_face_detect,
         time2 += elapsedTime
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_face_detect",
-                        default="models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
+                        default="head_pose_estimator/models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
                         help="Path of the detection model.")
-    parser.add_argument("--model_head_pose", default="models/head_pose_estimator_integer_quant.tflite",
+    parser.add_argument("--model_head_pose", default="head_pose_estimator/models/head_pose_estimator_integer_quant.tflite",
                         help="Path of the detection model.")
     parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
 
@@ -135,3 +136,7 @@ if __name__ == "__main__":
                 usbcamno,
                 vid_file,
                 show=True)
+
+
+if __name__ == "__main__":
+    main()

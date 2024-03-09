@@ -2,10 +2,10 @@ import cv2
 import streamlit as st
 from PIL import Image
 
-from src.head_pose import Processor
+from head_pose_estimator.src.head_pose import Processor
 
-processor = Processor("models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
-                      "models/head_pose_estimator_integer_quant.tflite")
+processor = Processor("head_pose_estimator/models/ssdlite_mobilenet_v2_face_300_integer_quant_with_postprocess.tflite",
+                      "head_pose_estimator/models/head_pose_estimator_integer_quant.tflite")
 
 
 def main():

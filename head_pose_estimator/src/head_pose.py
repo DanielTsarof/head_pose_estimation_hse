@@ -3,8 +3,8 @@ import math
 import cv2
 import numpy as np
 
-from src.head_pose_estimation import FaceDetector, HeadPoseEstimator, get_square_box, draw_annotation_box
-from src.stabilizer import Stabilizer
+from head_pose_estimator.src.head_pose_estimation import FaceDetector, HeadPoseEstimator, get_square_box, draw_annotation_box
+from head_pose_estimator.src.stabilizer import Stabilizer
 
 detectfps = ""
 
@@ -30,7 +30,7 @@ class Processor:
         ]) / 4.5
 
         raw_value = []
-        with open('models/model.txt') as file:
+        with open('head_pose_estimator/models/model.txt') as file:
             for line in file:
                 raw_value.append(line)
         self.model_points_68 = np.array(raw_value, dtype=np.float32)
