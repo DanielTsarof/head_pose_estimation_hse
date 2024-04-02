@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import cv2
 import streamlit as st
 from PIL import Image
@@ -10,14 +12,13 @@ processor = Processor("head_pose_estimator/models/ssdlite_mobilenet_v2_face_300_
 
 def main():
     st.title("Head Pose Estimation Demo")
-    st.write("This is a simple webcam live feed demo using OpenCV and Streamlit.")
+    st.write("Head pose estimation project webcam live demo using OpenCV and Streamlit.")
 
     # Создаем плейсхолдер для отображения изображения
     frame_holder = st.empty()
 
     # Захват видео с первой веб-камеры
     cap = cv2.VideoCapture(0)
-    button1 = st.button('Stop')
     while True:
         # Читаем кадр из видеопотока
         ret, frame = cap.read()
@@ -35,8 +36,6 @@ def main():
         frame_holder.image(img)
 
         # Если нужно остановить цикл (например, по нажатию кнопки в Streamlit)
-        if button1:
-            break
 
     cap.release()
 

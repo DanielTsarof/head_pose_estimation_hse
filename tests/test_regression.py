@@ -1,7 +1,9 @@
-from head_pose_estimator.src.head_pose import Processor
+from __future__ import annotations
 
 import cv2
 import numpy as np
+
+from head_pose_estimator.src.head_pose import Processor
 
 
 def test_processor_reg():
@@ -14,7 +16,8 @@ def test_processor_reg():
     test_processed = cv2.imread("tests/test_image_processed.png")
     print(type(image))
     # assert if there is the same image
-    assert  np.sum(processed - test_processed) == 0
+    assert np.sum(processed - test_processed) == 0
+
 
 def test_no_error():
     processor = Processor(
@@ -28,6 +31,7 @@ def test_no_error():
 
     assert isinstance(processed_big, np.ndarray)
     assert isinstance(processed_small, np.ndarray)
+
 
 if __name__ == "__main__":
     test_processor_reg()
